@@ -1,0 +1,31 @@
+from tkinter import *
+
+window = Tk()
+window.title("Многострочный текст")
+def insertText():
+    s = "Школа № 4_Класс 10"
+    text.insert(1.0, s)
+def getText():
+    s = text.get(2.0, 2.7)
+    label['text'] = s
+def deleteText():
+    text.delete(2.8, END)
+text = Text(width=25, height=5)
+text.pack()
+frame = Frame(window)
+frame.pack()
+b_insert = Button(frame, text="Вставить текст",
+                  command=insertText)
+b_insert.pack(side=LEFT)
+
+b_get = Button(frame, text="Считать текст",
+                  command=getText)
+b_get.pack(side=LEFT)
+
+b_delete = Button(frame, text="Удалить текст",
+                  command=deleteText)
+b_delete.pack(side=LEFT)
+
+label = Label()
+label.pack()
+window.mainloop()
