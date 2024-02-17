@@ -1,0 +1,21 @@
+import numpy as np
+import  matplotlib.pyplot as  plt
+import  matplotlib.animation as  animation
+
+# Создаем функцию, которая будет обновлять график на каждом шаге анимации
+def update(frame):
+    line.set_ydata(np.sin(x + frame/10.0))
+    return line,
+# Создаем данные для графика
+x = np.linspace(0,2*np.pi, 100)
+y = np.sin(x)
+
+# Создаем график
+fig,ax = plt.subplots()
+line, = ax.plot(x,y)
+
+# Настраиваем анимацию
+ani = animation.FuncAnimation(fig,update,frames=100,interval=50)
+
+#Отображаем график
+plt.show()
