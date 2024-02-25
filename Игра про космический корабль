@@ -1,0 +1,127 @@
+import pygame
+import random
+import sys
+
+# Инициализация Pygame
+pygame.init()
+
+# Цвета
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+
+# Размеры экрана
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+
+# Класс игрока
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface((50, 50))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 50)
+        self.speed = 8
+
+    def update(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            self.rect.x -= self.speed
+        if keys[pygame.K_RIGHT]:
+            self.rect.x += self.speed
+        # Ограничение движения по горизонтали
+        self.rect.x = max(0, min(self.rect.x, SCREEN_WIDTH - self.rect.width))
+
+# Класс вражеского корабля
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface((50, 50))
+        self.image.fill(BLUE)
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randint(0, SCREEN_WIDTH - self.rect.width)
+        self.rect.y = random.randint(-500, -50)
+        self.speed = random.randint(1, 4)
+
+    def update(self):
+        self.rect.y += self.speed
+        if self.rect.top > SCREEN_HEIGHT:
+            self.rect.x = random.randint(0, SCREEN_WIDTH - self.rect.width)
+            self.rect.y = random.randint(-500, -50)
+            self.speed = random.randint(1, 4)
+
+# Класс пули
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.Surface((5, 10))
+        self.image.fill(WHITE)
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.speed = 10
+
+    def update(self):
+        self.rect.y -= self.speed
+        if self.rect.bottom < 0:
+            self.kill()
+
+# Инициализация экрана
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Летающий корабль")
+
+# Группы спрайтов
+all_sprites = pygame.sprite.Group()
+enemies = pygame.sprite.Group()
+bullets = pygame.sprite.Group()
+
+# Создание игрока
+player = Player()
+all_sprites.add(player)
+
+# Главный игровой цикл
+clock = pygame.time.Clock()
+enemy_timer = pygame.time.get_ticks()
+
+running = True
+while running:
+    # Проверка событий
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            bullet = Bullet(player.rect.centerx, player.rect.top)
+            all_sprites.add(bullet)
+            bullets.add(bullet)
+
+    # Генерация врагов
+    if pygame.time.get_ticks() - enemy_timer > 1000:
+        enemy = Enemy()
+        all_sprites.add(enemy)
+        enemies.add(enemy)
+        enemy_timer = pygame.time.get_ticks()
+
+    # Обновление спрайтов
+    all_sprites.update()
+
+    # Проверка столкновений пуль с врагами
+    hits = pygame.sprite.groupcollide(enemies, bullets, True, True)
+    for hit in hits:
+        enemy = Enemy()
+        all_sprites.add(enemy)
+        enemies.add(enemy)
+
+    # Проверка столкновений игрока с врагами
+    if pygame.sprite.spritecollide(player, enemies, False):
+        running = False
+
+    # Отрисовка экрана
+    screen.fill((0, 0, 0))
+    all_sprites.draw(screen)
+    pygame.display.flip()
+
+    # Ограничение частоты кадров
+    clock.tick(60)
+
+pygame.quit()
+sys.exit()
