@@ -1,0 +1,23 @@
+from kivy.app import App
+from kivy.uix.label import Label
+from kivy.uix.boxlayout import BoxLayout
+from kivy.core.window import Window
+
+
+class MyApp(App):
+    def build(self):
+        # Установить фоновый цвет окна
+        Window.clearcolor = (0.2, 0.6, 0.8, 1)  # RGBA (красный, зеленый, синий, альфа)
+
+        # Создать макет
+        layout = BoxLayout(orientation='vertical')
+
+        # Добавить текстовый виджет
+        label = Label(text='Какой ваш вопрос?', font_size='24sp', color=(1, 1, 1, 1))
+        layout.add_widget(label)
+
+        return layout
+
+
+if __name__ == '__main__':
+    MyApp().run()
