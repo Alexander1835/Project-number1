@@ -1,0 +1,41 @@
+from kivy.app import App
+from kivy.uix.label import Label
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
+from kivy.core.window import Window
+
+class MyApp(App):
+    def build(self):
+        # Установить фоновый цвет окна
+        Window.clearcolor = (0.2, 0.6, 0.8, 1)  # RGBA (красный, зеленый, синий, альфа)
+
+        # Создать макет
+        layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
+        
+        # Добавить текстовую метку
+        label = Label(text='Какой ваш вопрос?', font_size='24sp', color=(1, 1, 1, 1))
+        layout.add_widget(label)
+
+        # Добавить текстовое поле
+        self.text_input = TextInput(font_size='24sp', size_hint_y=None, height=50)
+        layout.add_widget(self.text_input)
+
+        # Добавить кнопку
+        button = Button(text='Отправить', font_size='24sp', size_hint_y=None, height=50)
+        button.bind(on_press=self.on_button_press)
+        layout.add_widget(button)
+        
+        # Добавить метку для отображения результата
+        self.result_label = Label(text='', font_size='24sp', color=(1, 1, 1, 1))
+        layout.add_widget(self.result_label)
+        
+        return layout
+
+    def on_button_press(self, instance):
+        # Обработчик нажатия на кнопку
+        question = self.text_input.text
+        self.result_label.text = f'Ваш вопрос: {question}'
+
+if __name__ == '__main__':
+    MyApp().run()
