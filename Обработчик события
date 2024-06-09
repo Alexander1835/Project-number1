@@ -1,0 +1,43 @@
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+
+
+class MyApp(App):
+    def build(self):
+        # Создаем главный макет
+        layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
+
+        # Создаем текстовое поле
+        self.text_input = TextInput(
+            text='Hello, World!',
+            multiline=False,
+            readonly=False,
+            halign='center',
+            font_size=24
+        )
+
+        # Создаем кнопку
+        self.button = Button(
+            text='Click Me!',
+            size_hint=(1, 0.5),
+            font_size=24
+        )
+
+        # Привязываем обработчик события к кнопке
+        self.button.bind(on_press=self.on_button_press)
+
+        # Добавляем виджеты в макет
+        layout.add_widget(self.text_input)
+        layout.add_widget(self.button)
+
+        return layout
+
+    # Определяем обработчик события нажатия кнопки
+    def on_button_press(self, instance):
+        self.text_input.text = 'Button Clicked!'
+
+
+if __name__ == '__main__':
+    MyApp().run()
