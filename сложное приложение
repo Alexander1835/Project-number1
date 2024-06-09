@@ -1,0 +1,70 @@
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+from kivy.uix.slider import Slider
+from kivy.uix.label import Label
+
+class MyApp(App):
+    def build(self):
+        # Создаем главный макет
+        layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
+
+        # Создаем текстовое поле
+        self.text_input = TextInput(
+            text='Adjust my size!',
+            multiline=False,
+            readonly=False,
+            halign='center',
+            font_size=24
+        )
+
+        # Создаем кнопки
+        self.increase_button = Button(
+            text='Increase Text Size',
+            size_hint=(1, 0.2),
+            font_size=18
+        )
+        self.decrease_button = Button(
+            text='Decrease Text Size',
+            size_hint=(1, 0.2),
+            font_size=18
+        )
+
+        # Создаем слайдер
+        self.slider = Slider(
+            min=12,
+            max=72,
+            value=24,
+            step=1,
+            size_hint=(1, 0.2)
+        )
+
+        # Привязываем обработчики событий к кнопкам и слайдеру
+        self.increase_button.bind(on_press=self.increase_font_size)
+        self.decrease_button.bind(on_press=self.decrease_font_size)
+        self.slider.bind(value=self.on_slider_value_change)
+
+        # Добавляем виджеты в макет
+        layout.add_widget(self.text_input)
+        layout.add_widget(self.increase_button)
+        layout.add_widget(self.decrease_button)
+        layout.add_widget(Label(text='Adjust with slider:', size_hint=(1, 0.1)))
+        layout.add_widget(self.slider)
+
+        return layout
+
+    # Обработчик увеличения размера текста
+    def increase_font_size(self, instance):
+        self.text_input.font_size += 2
+
+    # Обработчик уменьшения размера текста
+    def decrease_font_size(self, instance):
+        self.text_input.font_size -= 2
+
+    # Обработчик изменения значения слайдера
+    def on_slider_value_change(self, instance, value):
+        self.text_input.font_size = value
+
+if __name__ == '__main__':
+    MyApp().run()
