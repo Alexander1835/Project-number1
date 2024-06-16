@@ -1,0 +1,12 @@
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+
+class WelcomeScreen(BoxLayout):
+    pass
+
+class WelcomeApp(App):
+    def build(self):
+        return WelcomeScreen()
+
+if __name__ == '__main__':
+    WelcomeApp().run()
