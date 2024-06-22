@@ -1,0 +1,17 @@
+
+# main.py
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.lang import Builder
+
+# Загрузка файла KV
+Builder.load_file('background.kv')
+
+
+class BackgroundApp(App):
+    def build(self):
+        return BoxLayout()
+
+
+if __name__ == '__main__':
+    BackgroundApp().run()
