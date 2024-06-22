@@ -1,0 +1,13 @@
+from kivy.app import App
+from kivy.uix.button import Button
+from kivy.animation import Animation
+class AnimationApp(App):
+    def animate_button(self, button):
+        anim = Animation(size=(button.width * 2, button.height * 2), duration=0.5) + Animation(size=(button.width, button.height), duration=0.5)
+        anim.start(button)
+    def build(self):
+        button = Button(text='Анимированная кнопка', size_hint=(None, None), size=(200, 50))
+        button.bind(on_press=lambda instance: self.animate_button(button))
+        return button
+if __name__ == '__main__':
+    AnimationApp().run()
