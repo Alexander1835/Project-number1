@@ -1,0 +1,46 @@
+from kivy.app import App
+from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.label import Label
+
+class FirstScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        layout = BoxLayout(orientation='vertical')
+        label = Label(text='Это первый экран')
+        button = Button(text='Перейти на второй экран')
+        button.bind(on_press=self.switch_to_second)
+        layout.add_widget(label)
+        layout.add_widget(button)
+        self.add_widget(layout)
+
+    def switch_to_second(self, instance):
+        self.manager.current = 'second'
+
+class SecondScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        layout = BoxLayout(orientation='vertical')
+        label = Label(text='Это второй экран')
+        button = Button(text='Перейти на первый экран')
+        button.bind(on_press=self.switch_to_first)
+        layout.add_widget(label)
+        layout.add_widget(button)
+        self.add_widget(layout)
+
+    def switch_to_first(self, instance):
+        self.manager.current = 'first'
+
+class MyScreenManager(ScreenManager):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.add_widget(FirstScreen(name='first'))
+        self.add_widget(SecondScreen(name='second'))
+
+class MyApp(App):
+    def build(self):
+        return MyScreenManager()
+
+if __name__ == '__main__':
+    MyApp().run()
