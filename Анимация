@@ -1,0 +1,25 @@
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.animation import Animation
+
+class AnimatedButton(Button):
+    def on_press(self):
+        # Создание анимации для увеличения размера кнопки
+        anim_increase = Animation(size=(self.width * 1.5, self.height * 1.5), duration=0.2)
+        # Создание анимации для уменьшения размера кнопки
+        anim_decrease = Animation(size=(self.width, self.height), duration=0.2)
+        # Последовательное выполнение анимаций
+        anim_increase += anim_decrease
+        # Запуск анимации
+        anim_increase.start(self)
+
+class MyApp(App):
+    def build(self):
+        layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
+        button = AnimatedButton(text='Нажми меня')
+        layout.add_widget(button)
+        return layout
+
+if __name__ == '__main__':
+    MyApp().run()
