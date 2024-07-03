@@ -1,0 +1,17 @@
+from kivy.uix.button import Button
+from kivy.app import App
+class ChangeTextButton(Button):
+    def __init__(self, **kwargs):
+        super(ChangeTextButton, self).__init__(**kwargs)
+        self.text_list = ["One", "Two", "Three"]
+        self.index = 0
+        self.text = self.text_list[self.index]
+        self.bind(on_press=self.on_button_press)
+    def on_button_press(self, instance):
+        self.index = (self.index + 1) % len(self.text_list)
+        self.text = self.text_list[self.index]
+class MyApp(App):
+    def build(self):
+        return ChangeTextButton()
+if __name__ == '__main__':
+    MyApp().run()
