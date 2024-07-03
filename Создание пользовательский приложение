@@ -1,0 +1,26 @@
+1.from kivy.uix.button import Button
+from kivy.properties import StringProperty
+class CustomButton(Button):
+    custom_text = StringProperty("Default")
+    def __init__(self, **kwargs):
+        super(CustomButton, self).__init__(**kwargs)
+        self.bind(on_press=self.on_button_press)
+    def on_button_press(self, instance):
+        print(f"Button pressed! Custom text is: {self.custom_text}")
+
+2.from kivy.uix.button import Button
+from kivy.properties import StringProperty
+class CustomButton(Button):
+    custom_text = StringProperty("Default")
+    def __init__(self, **kwargs):
+        super(CustomButton, self).__init__(**kwargs)
+        self.bind(on_press=self.on_button_press)
+    def on_button_press(self, instance):
+        print(f"Button pressed! Custom text is: {self.custom_text}")
+
+from kivy.app import App
+class MyApp(App):
+    def build(self):
+        return CustomButton(text="Press me", custom_text="Hello, Custom Kivy!")
+if __name__ == '__main__':
+    MyApp().run()
