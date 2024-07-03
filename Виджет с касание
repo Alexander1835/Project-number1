@@ -1,0 +1,26 @@
+from kivy.uix.widget import Widget
+from kivy.graphics import Ellipse, Color
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+class CustomGraphic(Widget):
+    def __init__(self, **kwargs):
+        super(CustomGraphic, self).__init__(**kwargs)
+        with self.canvas:
+            Color(1, 0, 0, 1)  # RGBA
+            self.ellipse = Ellipse(pos=(100, 100), size=(200, 200))
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos):
+            self.canvas.clear()
+            with self.canvas:
+                Color(0, 1, 0, 1)
+                self.ellipse = Ellipse(pos=(100, 100), size=(200, 200))
+            return True
+        return super(CustomGraphic, self).on_touch_down(touch)
+class TestApp(App):
+    def build(self):
+        layout = BoxLayout()
+        graphic = CustomGraphic()
+        layout.add_widget(graphic)
+        return layout
+if __name__ == "__main__":
+    TestApp().run()
