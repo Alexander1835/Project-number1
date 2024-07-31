@@ -1,0 +1,78 @@
+import os
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.gridlayout import GridLayout
+
+BOOKS_FILE = 'books.txt'
+
+def load_books():
+    """Загрузка информации о книгах из текстового файла."""
+    books = []
+    if os.path.exists(BOOKS_FILE):
+        with open(BOOKS_FILE, 'r', encoding='utf-8') as file:
+            lines = file.readlines()
+            for line in lines:
+                title, author, year = line.strip().split(';')
+                books.append({"title": title, "author": author, "year": year})
+    return books
+
+def save_books(books):
+    """Сохранение информации о книгах в текстовый файл."""
+    with open(BOOKS_FILE, 'w', encoding='utf-8') as file:
+        for book in books:
+            file.write(f"{book['title']};{book['author']};{book['year']}\n")
+
+class LibraryApp(App):
+    def build(self):
+        self.books = load_books()
+
+        self.root = BoxLayout(orientation='vertical')
+
+        self.book_list = GridLayout(cols=1, spacing=10, size_hint_y=None)
+        self.book_list.bind(minimum_height=self.book_list.setter('height'))
+
+        self.scroll_view = ScrollView(size_hint=(1, 0.8))
+        self.scroll_view.add_widget(self.book_list)
+        self.root.add_widget(self.scroll_view)
+
+        for book in self.books:
+            self.add_book_to_list(book["title"], book["author"], book["year"])
+
+        self.title_input = TextInput(hint_text='Название', size_hint=(1, None), height=30)
+        self.author_input = TextInput(hint_text='Автор', size_hint=(1, None), height=30)
+        self.year_input = TextInput(hint_text='Год издания', size_hint=(1, None), height=30)
+        self.root.add_widget(self.title_input)
+        self.root.add_widget(self.author_input)
+        self.root.add_widget(self.year_input)
+
+        self.add_button = Button(text='Добавить книгу', size_hint=(1, None), height=50)
+        self.add_button.bind(on_press=self.add_book)
+        self.root.add_widget(self.add_button)
+
+        return self.root
+
+    def add_book(self, instance):
+        title = self.title_input.text
+        author = self.author_input.text
+        year = self.year_input.text
+
+        if title and author and year:
+            book = {"title": title, "author": author, "year": year}
+            self.books.append(book)
+            self.add_book_to_list(title, author, year)
+            save_books(self.books)
+
+            self.title_input.text = ''
+            self.author_input.text = ''
+            self.year_input.text = ''
+
+    def add_book_to_list(self, title, author, year):
+        book_label = Label(text=f'{title} by {author} ({year})', size_hint_y=None, height=40)
+        self.book_list.add_widget(book_label)
+
+if __name__ == '__main__':
+    LibraryApp().run()
