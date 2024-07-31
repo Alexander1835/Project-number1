@@ -1,0 +1,76 @@
+import sqlite3
+from datetime import datetime
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.gridlayout import GridLayout
+
+DB_FILE = 'diary.db'
+
+class DiaryApp(App):
+    def build(self):
+        self.conn = sqlite3.connect(DB_FILE)
+        self.create_table()
+
+        self.root = BoxLayout(orientation='vertical')
+
+        self.entry_list = GridLayout(cols=1, spacing=10, size_hint_y=None)
+        self.entry_list.bind(minimum_height=self.entry_list.setter('height'))
+
+        self.scroll_view = ScrollView(size_hint=(1, 0.8))
+        self.scroll_view.add_widget(self.entry_list)
+        self.root.add_widget(self.scroll_view)
+
+        self.load_entries()
+
+        self.text_input = TextInput(hint_text='Введите текст записи...', size_hint=(1, None), height=100)
+        self.root.add_widget(self.text_input)
+
+        self.add_button = Button(text='Добавить запись', size_hint=(1, None), height=50)
+        self.add_button.bind(on_press=self.add_entry)
+        self.root.add_widget(self.add_button)
+
+        return self.root
+
+    def create_table(self):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS diary (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                date TEXT,
+                text TEXT
+            )
+        ''')
+        self.conn.commit()
+
+    def load_entries(self):
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT date, text FROM diary ORDER BY date DESC')
+        entries = cursor.fetchall()
+
+        for entry in entries:
+            self.add_entry_to_list(entry[0], entry[1])
+
+    def add_entry(self, instance):
+        text = self.text_input.text
+        if text:
+            date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            cursor = self.conn.cursor()
+            cursor.execute('INSERT INTO diary (date, text) VALUES (?, ?)', (date, text))
+            self.conn.commit()
+
+            self.add_entry_to_list(date, text)
+            self.text_input.text = ''
+
+    def add_entry_to_list(self, date, text):
+        entry_label = Label(text=f'{date}\n{text}', size_hint_y=None, height=100, valign='top')
+        self.entry_list.add_widget(entry_label)
+
+    def on_stop(self):
+        self.conn.close()
+
+if __name__ == '__main__':
+    DiaryApp().run()
