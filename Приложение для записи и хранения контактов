@@ -1,0 +1,72 @@
+import json
+import os
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.gridlayout import GridLayout
+
+CONTACTS_FILE = 'contacts.json'
+
+def load_contacts():
+    """Загрузка контактов из JSON-файла."""
+    if os.path.exists(CONTACTS_FILE):
+        with open(CONTACTS_FILE, 'r') as file:
+            contacts = json.load(file)
+    else:
+        contacts = []
+    return contacts
+
+def save_contacts(contacts):
+    """Сохранение контактов в JSON-файл."""
+    with open(CONTACTS_FILE, 'w') as file:
+        json.dump(contacts, file, indent=4)
+
+class ContactApp(App):
+    def build(self):
+        self.contacts = load_contacts()
+
+        self.root = BoxLayout(orientation='vertical')
+
+        self.contact_list = GridLayout(cols=1, spacing=10, size_hint_y=None)
+        self.contact_list.bind(minimum_height=self.contact_list.setter('height'))
+
+        self.scroll_view = ScrollView(size_hint=(1, 0.8))
+        self.scroll_view.add_widget(self.contact_list)
+        self.root.add_widget(self.scroll_view)
+
+        for contact in self.contacts:
+            self.add_contact_to_list(contact["name"], contact["phone"])
+
+        self.name_input = TextInput(hint_text='Имя', size_hint=(1, None), height=30)
+        self.phone_input = TextInput(hint_text='Телефон', size_hint=(1, None), height=30)
+        self.root.add_widget(self.name_input)
+        self.root.add_widget(self.phone_input)
+
+        self.add_button = Button(text='Добавить контакт', size_hint=(1, None), height=50)
+        self.add_button.bind(on_press=self.add_contact)
+        self.root.add_widget(self.add_button)
+
+        return self.root
+
+    def add_contact(self, instance):
+        name = self.name_input.text
+        phone = self.phone_input.text
+
+        if name and phone:
+            contact = {"name": name, "phone": phone}
+            self.contacts.append(contact)
+            self.add_contact_to_list(name, phone)
+            save_contacts(self.contacts)
+
+            self.name_input.text = ''
+            self.phone_input.text = ''
+
+    def add_contact_to_list(self, name, phone):
+        contact_label = Label(text=f'{name}: {phone}', size_hint_y=None, height=40)
+        self.contact_list.add_widget(contact_label)
+
+if __name__ == '__main__':
+    ContactApp().run()
