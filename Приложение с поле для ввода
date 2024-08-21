@@ -1,0 +1,32 @@
+import toga
+from toga.style import Pack
+from toga.style.pack import COLUMN, CENTER
+
+
+class TextInputApp(toga.App):
+
+        def startup(self):
+                self.main_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
+
+                self.input_field = toga.TextInput(style=Pack(padding=10, width=200))
+                button = toga.Button('Submit', on_press=self.show_text, style=Pack(padding=10))
+                self.output_label = toga.Label('Your text will appear here.', style=Pack(padding=10))
+
+                self.main_box.add(self.input_field)
+                self.main_box.add(button)
+                self.main_box.add(self.output_label)
+
+                self.main_window = toga.MainWindow(title=self.formal_name)
+                self.main_window.content = self.main_box
+                self.main_window.show()
+
+        def show_text(self, widget):
+                self.output_label.text = self.input_field.value
+
+
+def main():
+        return TextInputApp('TextInputApp', 'com.example.textinputapp')
+
+
+if __name__ == '__main__':
+        main().main_loop()
