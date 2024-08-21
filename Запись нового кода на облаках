@@ -1,0 +1,30 @@
+import toga
+from toga.style import Pack
+from toga.style.pack import COLUMN, CENTER
+
+
+class HelloWorldApp(toga.App):
+
+        def startup(self):
+                self.main_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
+                self.greeting = toga.Label('Hello, World!', style=Pack(padding=10))
+
+                button = toga.Button('Click me', on_press=self.change_text, style=Pack(padding=10))
+
+                self.main_box.add(self.greeting)
+                self.main_box.add(button)
+
+                self.main_window = toga.MainWindow(title=self.formal_name)
+                self.main_window.content = self.main_box
+                self.main_window.show()
+
+        def change_text(self, widget):
+                self.greeting.text = "Button clicked!"
+
+
+def main():
+        return HelloWorldApp('HelloWorld', 'com.example.helloworld')
+
+
+if __name__ == '__main__':
+        main().main_loop()
