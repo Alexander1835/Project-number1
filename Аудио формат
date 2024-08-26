@@ -1,0 +1,13 @@
+import pygame
+
+
+# Инициализация микшера
+pygame.mixer.init()
+
+# Загрузка и воспроизведение аудио
+pygame.mixer.music.load(r'C:\Users\DExp1\Desktop\salamisound-6919184-heavy-rain-with-thunderstorm.mp3')
+pygame.mixer.music.play()
+
+# Ожидание завершения воспроизведения
+while pygame.mixer.music.get_busy():
+    pygame.time.Clock().tick(10)
