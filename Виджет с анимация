@@ -1,0 +1,20 @@
+import tkinter as tk
+
+def move_square():
+    global x_pos
+    canvas.move(square, 5, 0)  # Движение вправо на 5 пикселей
+    x_pos += 5
+    if x_pos < 200:  # Остановка после 200 пикселей
+        root.after(50, move_square)
+
+x_pos = 0
+root = tk.Tk()
+root.title("Анимация квадрата")
+
+canvas = tk.Canvas(root, width=400, height=200)
+canvas.pack()
+
+square = canvas.create_rectangle(10, 50, 60, 100, fill="blue")
+
+move_square()  # Старт анимации
+root.mainloop()
