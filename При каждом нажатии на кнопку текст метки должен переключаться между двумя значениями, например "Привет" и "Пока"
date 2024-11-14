@@ -1,0 +1,26 @@
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+
+class ToggleTextApp(App):
+    def build(self):
+        self.text_label = Label(text="Привет", font_size=32)
+        toggle_button = Button(text="Переключить текст", font_size=24)
+        toggle_button.bind(on_press=self.toggle_text)
+
+        layout = BoxLayout(orientation="vertical")
+        layout.add_widget(self.text_label)
+        layout.add_widget(toggle_button)
+
+        return layout
+
+    def toggle_text(self, instance):
+        # Переключаем текст между "Привет" и "Пока"
+        if self.text_label.text == "Привет":
+            self.text_label.text = "Пока"
+        else:
+            self.text_label.text = "Привет"
+
+if __name__ == '__main__':
+    ToggleTextApp().run()
