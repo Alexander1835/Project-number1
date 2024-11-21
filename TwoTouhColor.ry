@@ -1,0 +1,36 @@
+from kivy.app import App
+from kivy.uix.widget import Widget
+from kivy.graphics import Rectangle, Color
+from kivy.properties import ListProperty
+import random
+
+
+class DoubleTapWidget(Widget):
+    bg_color = ListProperty([1, 1, 1, 1])  # Белый фон по умолчанию
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        with self.canvas:
+            self.color = Color(*self.bg_color)  # Задаем цвет через графику
+            self.rect = Rectangle(size=self.size, pos=self.pos)
+        self.bind(pos=self.update_canvas, size=self.update_canvas, bg_color=self.update_canvas)
+
+    def update_canvas(self, *args):
+        """Обновляет позицию, размер и цвет прямоугольника"""
+        self.color.rgba = self.bg_color
+        self.rect.size = self.size
+        self.rect.pos = self.pos
+
+    def on_touch_down(self, touch):
+        if touch.is_double_tap:  # Если двойное касание
+            self.bg_color = [random.random(), random.random(), random.random(), 1]  # Случайный цвет
+        return super().on_touch_down(touch)
+
+
+class DoubleTapApp(App):
+    def build(self):
+        return DoubleTapWidget()
+
+
+if __name__ == "__main__":
+    DoubleTapApp().run()
