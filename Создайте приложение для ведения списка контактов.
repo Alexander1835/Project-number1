@@ -1,0 +1,81 @@
+import json
+import os
+
+# Путь к файлу для хранения контактов
+FILE_PATH = "contacts.json"
+
+class ContactManager:
+    def init(self):
+        """Инициализация менеджера контактов"""
+        self.contacts = {}  # Храним контакты в словаре
+        self.load_contacts()
+
+    def load_contacts(self):
+        """Загрузка контактов из файла JSON"""
+        if os.path.exists(FILE_PATH):
+            try:
+                with open(FILE_PATH, "r", encoding="utf-8") as file:
+                    data = json.load(file)
+                    if isinstance(data, dict):
+                        self.contacts = data
+                        print("Контакты успешно загружены!")
+                    else:
+                        print("Ошибка: Неверный формат данных. Начинаем с пустого списка.")
+                        self.contacts = {}
+            except (json.JSONDecodeError, FileNotFoundError):
+                print("Ошибка: Не удалось загрузить файл. Начинаем с пустого списка.")
+                self.contacts = {}
+        else:
+            print("Файл с контактами не найден. Начинаем с пустого списка.")
+
+    def save_contacts(self):
+        """Сохранение контактов в файл JSON"""
+        with open(FILE_PATH, "w", encoding="utf-8") as file:
+            json.dump(self.contacts, file, indent=4, ensure_ascii=False)
+            print("Контакты успешно сохранены!")
+
+    def add_contact(self, name, phone):
+        """Добавление нового контакта"""
+        if name in self.contacts:
+            print(f"Контакт с именем '{name}' уже существует.")
+        else:
+            self.contacts[name] = phone
+            print(f"Контакт '{name}' добавлен успешно!")
+
+    def show_contacts(self):
+        """Вывод всех контактов"""
+        if not self.contacts:
+            print("Список контактов пуст.")
+        else:
+            print("\nВаши контакты:")
+            for name, phone in self.contacts.items():
+                print(f"- {name}: {phone}")
+
+def main():
+    manager = ContactManager()
+
+    while True:
+        print("\nМеню:")
+        print("1. Показать контакты")
+        print("2. Добавить контакт")
+        print("3. Сохранить и выйти")
+        choice = input("Выберите действие (1/2/3): ").strip()
+
+        if choice == "1":
+            manager.show_contacts()
+        elif choice == "2":
+            name = input("Введите имя контакта: ").strip()
+            phone = input("Введите номер телефона: ").strip()
+            if name and phone:
+                manager.add_contact(name, phone)
+            else:
+                print("Ошибка: Имя и номер телефона не могут быть пустыми!")
+        elif choice == "3":
+            manager.save_contacts()
+            print("Программа завершена. До свидания!")
+            break
+        else:
+            print("Ошибка: Неверный выбор. Попробуйте снова.")
+
+if __name__ == "__main__":
+    main()
