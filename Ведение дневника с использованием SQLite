@@ -1,0 +1,79 @@
+import sqlite3
+from datetime import datetime
+
+class DiaryApp:
+    def init(self):
+        # Подключение к базе данных
+        self.conn = sqlite3.connect("diary.db")
+        self.cursor = self.conn.cursor()
+        self.create_table()
+
+    def create_table(self):
+        """Создание таблицы для записей дневника."""
+        try:
+            self.cursor.execute("""
+                CREATE TABLE IF NOT EXISTS entries (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    date TEXT NOT NULL,
+                    content TEXT NOT NULL
+                )
+            """)
+            self.conn.commit()
+        except sqlite3.Error as e:
+            print(f"Ошибка при создании таблицы: {e}")
+
+    def add_entry(self, content):
+        """Добавление новой записи в дневник."""
+        try:
+            date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            self.cursor.execute("INSERT INTO entries (date, content) VALUES (?, ?)", (date, content))
+            self.conn.commit()
+            print("Запись успешно добавлена!")
+        except sqlite3.Error as e:
+            print(f"Ошибка при добавлении записи: {e}")
+
+    def show_entries(self):
+        """Отображение всех записей дневника."""
+        try:
+            self.cursor.execute("SELECT date, content FROM entries ORDER BY date DESC")
+            entries = self.cursor.fetchall()
+            if entries:
+                print("\nВаши записи:")
+                for entry in entries:
+                    print(f"Дата: {entry[0]}")
+                    print(f"Запись: {entry[1]}")
+                    print("-" * 30)
+            else:
+                print("В дневнике пока нет записей.")
+        except sqlite3.Error as e:
+            print(f"Ошибка при получении записей: {e}")
+
+    def close(self):
+        """Закрытие соединения с базой данных."""
+        self.conn.close()
+
+def main():
+    app = DiaryApp()
+    print("Добро пожаловать в приложение 'Личный дневник'! 📓")
+
+    while True:
+        print("\nМеню:")
+        print("1. Показать записи")
+        print("2. Добавить запись")
+        print("3. Выйти")
+        choice = input("Выберите действие (1/2/3): ")
+
+        if choice == "1":
+            app.show_entries()
+        elif choice == "2":
+            content = input("Введите текст записи: ")
+            app.add_entry(content)
+        elif choice == "3":
+            app.close()
+            print("До свидания! 👋")
+            break
+        else:
+            print("Неверный выбор, попробуйте снова.")
+
+if name == "main":
+    main()
