@@ -1,0 +1,72 @@
+import csv
+import os
+
+# Путь к файлу, где будет храниться информация о бюджете
+filename = 'budget.csv'
+
+
+# Функция для загрузки данных из CSV файла
+def load_data():
+    if os.path.exists(filename):
+        with open(filename, 'r', newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            data = [row for row in reader]
+        return data
+    else:
+        return []
+
+
+# Функция для сохранения данных в CSV файл
+def save_data(data):
+    with open(filename, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerows(data)
+
+
+# Функция для добавления записи о доходе или расходе
+def add_record(data):
+    record_type = input("Введите тип записи (доход/расход): ").lower()
+    category = input("Введите категорию (например, еда, транспорт): ")
+    amount = float(input("Введите сумму: "))
+    date = input("Введите дату (в формате ГГГГ-ММ-ДД): ")
+
+    if record_type in ['доход', 'расход']:
+        data.append([record_type.capitalize(), category, amount, date])
+        save_data(data)
+    else:
+        print("Ошибка: тип записи должен быть 'доход' или 'расход'.")
+
+
+# Основная логика
+def main():
+    data = load_data()
+
+    # Если данных в файле нет, добавим заголовки
+    if not data:
+        data.append(['Тип', 'Категория', 'Сумма', 'Дата'])
+
+    while True:
+        print("\n1. Добавить запись")
+        print("2. Показать все записи")
+        print("3. Выход")
+
+        choice = input("Выберите действие (1/2/3): ")
+
+        if choice == '1':
+            add_record(data)
+        elif choice == '2':
+            if len(data) > 1:
+                print("\nЗаписи о бюджете:")
+                for row in data[1:]:  # Пропускаем заголовок
+                    print(f"{row[0]} | {row[1]} | {row[2]} | {row[3]}")
+            else:
+                print("Нет записей в бюджете.")
+        elif choice == '3':
+            print("До свидания!")
+            break
+        else:
+            print("Неверный выбор. Попробуйте снова.")
+
+
+if __name__ == "__main__":
+    main()
