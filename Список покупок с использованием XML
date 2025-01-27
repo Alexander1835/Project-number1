@@ -1,0 +1,84 @@
+import xml.etree.ElementTree as ET
+import os
+
+# Имя файла для сохранения данных
+XML_FILE = "shopping_list.xml"
+
+
+# Функция для создания XML-файла, если он не существует
+def create_xml_file():
+    if not os.path.exists(XML_FILE):
+        root = ET.Element("shopping_list")
+        tree = ET.ElementTree(root)
+        tree.write(XML_FILE, encoding="utf-8", xml_declaration=True)
+
+
+# Функция для загрузки списка покупок из XML-файла
+def load_shopping_list():
+    tree = ET.parse(XML_FILE)
+    root = tree.getroot()
+    shopping_list = []
+    for item in root.findall("item"):
+        name = item.find("name").text
+        quantity = item.find("quantity").text
+        shopping_list.append({"name": name, "quantity": quantity})
+    return shopping_list
+
+
+# Функция для добавления нового товара в список и сохранения в XML
+def add_item_to_shopping_list(name, quantity):
+    tree = ET.parse(XML_FILE)
+    root = tree.getroot()
+
+    # Создаём новый элемент товара
+    item = ET.Element("item")
+    name_element = ET.SubElement(item, "name")
+    name_element.text = name
+    quantity_element = ET.SubElement(item, "quantity")
+    quantity_element.text = str(quantity)
+
+    # Добавляем товар в корень XML
+    root.append(item)
+    tree.write(XML_FILE, encoding="utf-8", xml_declaration=True)
+
+
+# Основное меню программы
+def main():
+    create_xml_file()
+    print("Добро пожаловать в приложение 'Список покупок'!")
+
+    while True:
+        print("\nВыберите действие:")
+        print("1. Показать список покупок")
+        print("2. Добавить новый товар")
+        print("3. Выйти")
+
+        choice = input("Введите номер действия: ")
+
+        if choice == "1":
+            shopping_list = load_shopping_list()
+            if not shopping_list:
+                print("\nСписок покупок пуст.")
+            else:
+                print("\nСписок покупок:")
+                for i, item in enumerate(shopping_list, start=1):
+                    print(f"{i}. {item['name']} — {item['quantity']}")
+
+        elif choice == "2":
+            name = input("Введите название товара: ")
+            quantity = input("Введите количество: ")
+            add_item_to_shopping_list(name, quantity)
+            print(f"\nТовар '{name}' в количестве {quantity} добавлен в список!")
+
+        elif choice == "3":
+            print("Выход из приложения. До свидания!")
+            break
+
+        else:
+            print("Некорректный выбор. Попробуйте снова.")
+
+
+# Запуск программы
+if __name__ == "__main__":
+    main()
+
