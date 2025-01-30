@@ -1,0 +1,36 @@
+import toga
+from toga.style import Pack
+from toga.style.pack import COLUMN, ROW
+
+class MultiWindowApp(toga.App):
+    def startup(self):
+        # Создание главного окна
+        self.main_window = toga.MainWindow(title=self.name)
+        self.main_window.content = toga.Box()
+        self.main_window.show()
+
+        # Кнопка для открытия нового окна
+        button = toga.Button(
+            "Открыть новое окно",
+            on_press=self.open_new_window,
+            style=Pack(padding=10)
+        )
+
+        # Добавляем кнопку в главное окно
+        self.main_window.content.add(button)
+
+    def open_new_window(self, widget):
+        # Создаём новое окно
+        new_window = toga.Window(title="Новое окно")
+        box = toga.Box()
+        label = toga.Label("Это новое окно!", style=Pack(padding=10))
+        box.add(label)
+
+        new_window.content = box
+        new_window.show()  # Отображаем новое окно
+
+def main():
+    return MultiWindowApp("Многооконное приложение", "org.example.multiwindow")
+
+if name == "main":
+    main().main_loop()
