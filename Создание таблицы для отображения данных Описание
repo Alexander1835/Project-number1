@@ -1,0 +1,42 @@
+import toga
+from toga.style import Pack
+from toga.style.pack import COLUMN, ROW
+
+class TableApp(toga.App):
+    def startup(self):
+        # Создаем окно приложения
+        main_box = toga.Box(style=Pack(direction=COLUMN))
+
+        # Заголовки столбцов таблицы
+        headers = ['Имя', 'Возраст', 'Город']
+        
+        # Данные для отображения в таблице
+        data = [
+            ['Иван', 28, 'Москва'],
+            ['Мария', 22, 'Санкт-Петербург'],
+            ['Петр', 34, 'Новосибирск'],
+            ['Алексей', 25, 'Екатеринбург'],
+        ]
+
+        # Создаем таблицу
+        table = toga.Table(
+            headings=headers,
+            data=data,
+            style=Pack(flex=1)
+        )
+
+        # Добавляем таблицу в главное окно
+        main_box.add(table)
+
+        # Создаем и показываем окно
+        self.main_window = toga.MainWindow(title="Таблица данных")
+        self.main_window.content = main_box
+        self.main_window.show()
+
+# Запускаем приложение
+def main():
+    return TableApp()
+
+if name == 'main':
+    app = main()
+    app.main_loop()
