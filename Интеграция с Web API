@@ -1,0 +1,45 @@
+import toga
+from toga.style import Pack
+from toga.style.pack import COLUMN, ROW
+import requests
+
+
+class WebAPIApp(toga.App):
+    def init(self, *args, **kwargs):
+        super().init(*args, **kwargs)
+
+    def startup(self):
+        self.main_window = toga.MainWindow(self.name)
+
+        # Создаём кнопку для получения данных
+        self.get_data_button = toga.Button('Получить данные', on_press=self.get_data, style=Pack(padding=10))
+
+        # Создаём метку для отображения данных
+        self.data_label = toga.Label('Данные будут отображены здесь', style=Pack(padding=10))
+
+        # Создаём контейнер для размещения элементов
+        box = toga.Box(children=[self.get_data_button, self.data_label], style=Pack(direction=COLUMN))
+
+        self.main_window.content = box
+        self.main_window.show()
+
+    def get_data(self, widget):
+        # API запрос (используем пример с публичным API)
+        url = 'https://jsonplaceholder.typicode.com/todos/1'
+        try:
+            response = requests.get(url)
+            response.raise_for_status()  # Проверка на успешный ответ
+            data = response.json()  # Парсим JSON данные
+
+            # Отображаем полученные данные
+            self.data_label.text = f"Title: {data['title']}\nCompleted: {data['completed']}"
+        except requests.exceptions.RequestException as e:
+            self.data_label.text = f"Ошибка: {e}"
+
+
+def main():
+    return WebAPIApp('Web API Example', 'org.example.webapi')
+
+
+if __name__ == '__main__':
+    main().main_loop()
