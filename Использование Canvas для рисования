@@ -1,0 +1,45 @@
+import toga
+from toga import Canvas
+from toga.style import Pack
+from toga.style.pack import COLUMN, ROW
+
+
+class DrawingApp(toga.App):
+    def startup(self):
+        # Создаем главный контейнер
+        main_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
+
+        # Создаем Canvas для рисования
+        canvas = Canvas(style=Pack(flex=1))
+
+        # Функция для рисования
+        def on_draw(canvas, context):
+            # Рисуем линии, круги, прямоугольники
+            context.set_fill_color(0, 1, 0)  # Зеленый цвет
+            context.fill_rect(10, 10, 100, 100)  # Прямоугольник
+            context.set_fill_color(0, 0, 1)  # Синий цвет
+            context.fill_circle(200, 200, 50)  # Круг
+            context.set_stroke_color(1, 0, 0)  # Красный цвет
+            context.set_line_width(5)
+            context.move_to(300, 50)
+            context.line_to(400, 150)
+            context.stroke()  # Линия
+
+        # Привязываем функцию рисования к событию
+        canvas.on_draw = on_draw
+
+        # Добавляем Canvas в основной контейнер
+        main_box.add(canvas)
+
+        # Создаем и показываем основное окно
+        self.main_window = toga.MainWindow(self.name)
+        self.main_window.content = main_box
+        self.main_window.show()
+
+
+def main():
+    return DrawingApp("Canvas Drawing", "org.beeware.drawing")
+
+
+if __name__ == '__main__':
+    main().main_loop()
