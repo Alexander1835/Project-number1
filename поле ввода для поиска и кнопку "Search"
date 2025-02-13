@@ -1,0 +1,52 @@
+import toga
+from toga.style import Pack
+from toga.style.pack import COLUMN, ROW
+
+class TextSearchApp(toga.App):
+    def startup(self):
+        # Создаем главное окно
+        self.main_window = toga.MainWindow(self.name)
+
+        # Создаем текстовую область
+        self.text_area = toga.TextInput(style=Pack(flex=1))
+
+        # Создаем поле для поиска
+        self.search_field = toga.TextInput(placeholder="Введите текст для поиска", style=Pack(flex=1))
+
+        # Создаем кнопку для поиска
+        self.search_button = toga.Button("Search", on_press=self.search_text)
+
+        # Создаем контейнер для поля ввода поиска и кнопки
+        search_box = toga.Box(children=[self.search_field, self.search_button], style=Pack(direction=ROW))
+
+        # Создаем основной контейнер для текста и элементов управления
+        main_box = toga.Box(children=[search_box, self.text_area], style=Pack(direction=COLUMN, padding=10))
+
+        # Устанавливаем виджет в главное окно
+        self.main_window.content = main_box
+
+        # Показываем главное окно
+        self.main_window.show()
+
+    def search_text(self, widget):
+        search_query = self.search_field.value  # Получаем текст для поиска
+        text = self.text_area.value  # Получаем текст из текстовой области
+
+        # Ищем первое вхождение искомого текста
+        index = text.find(search_query)
+
+        if index != -1:
+            # Если найдено, выделяем вхождение
+            self.text_area.style.background_color = 'yellow'  # Подсветим текст (цвет можно настроить)
+            self.text_area.value = text[:index] + text[index:index+len(search_query)] + text[index+len(search_query):]
+        else:
+            # Если не найдено, показываем сообщение
+            self.text_area.style.background_color = 'white'
+            self.text_area.value = text  # Возвращаем текст без изменений
+
+# Создаем приложение
+def main():
+    return TextSearchApp('Text Search App', 'org.example.textsearch')
+
+if __name__ == '__main__':
+    main().main_loop()
