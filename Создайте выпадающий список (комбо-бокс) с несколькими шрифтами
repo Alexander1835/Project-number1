@@ -1,0 +1,29 @@
+import tkinter as tk
+from tkinter import ttk
+
+# Функция для изменения шрифта
+def change_font():
+    selected_font = font_combo.get()  # Получаем выбранный шрифт
+    text_area.config(font=(selected_font, 12))  # Устанавливаем новый шрифт
+
+# Создаем главное окно
+root = tk.Tk()
+root.title("Text Editor")
+root.geometry("400x300")
+
+# Создаем выпадающий список со шрифтами
+fonts = ["Arial", "Times New Roman", "Courier New"]
+font_combo = ttk.Combobox(root, values=fonts, state="readonly")
+font_combo.set(fonts[0])  # Устанавливаем шрифт по умолчанию
+font_combo.pack(pady=10)
+
+# Кнопка для изменения шрифта
+change_font_button = tk.Button(root, text="Change Font", command=change_font)
+change_font_button.pack()
+
+# Текстовое поле
+text_area = tk.Text(root, font=(fonts[0], 12), wrap="word")
+text_area.pack(expand=True, fill="both", padx=10, pady=10)
+
+# Запуск основного цикла
+root.mainloop()
