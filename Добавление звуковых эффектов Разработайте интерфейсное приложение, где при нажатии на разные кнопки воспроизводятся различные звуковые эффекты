@@ -1,0 +1,69 @@
+import pygame
+import sys
+
+# Инициализация pygame
+pygame.init()
+
+# Настройки окна приложения
+screen_width = 400
+screen_height = 300
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Звуковые эффекты в приложении")
+
+# Цвета
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (200, 200, 200)
+
+# Шрифт
+font = pygame.font.Font(None, 36)
+
+# Загрузка звуковых эффектов
+confirm_sound = pygame.mixer.Sound("confirm.wav")  # Укажи путь к своему аудиофайлу
+cancel_sound = pygame.mixer.Sound("cancel.wav")  # Укажи путь к своему аудиофайлу
+
+
+# Функция для создания кнопки
+def draw_button(text, x, y, width, height, active_color, inactive_color):
+  mouse = pygame.mouse.get_pos()
+  click = pygame.mouse.get_pressed()
+
+  # Проверка, находится ли курсор над кнопкой
+  if x < mouse[0] < x + width and y < mouse[1] < y + height:
+    pygame.draw.rect(screen, active_color, (x, y, width, height))
+    if click[0] == 1:  # Если кнопка нажата
+      return True
+  else:
+    pygame.draw.rect(screen, inactive_color, (x, y, width, height))
+
+  # Отрисовка текста на кнопке
+  text_surface = font.render(text, True, BLACK)
+  text_rect = text_surface.get_rect(center=(x + width / 2, y + height / 2))
+  screen.blit(text_surface, text_rect)
+  return False
+
+
+# Основной цикл приложения
+running = True
+while running:
+  for event in pygame.event.get():
+    if event.type == pygame.QUIT:  # Если пользователь закрыл окно
+      running = False
+
+  # Заливка экрана белым цветом
+  screen.fill(WHITE)
+
+  # Создание кнопки "Подтвердить"
+  if draw_button("Подтвердить", 50, 100, 120, 50, GRAY, (150, 150, 150)):
+    confirm_sound.play()  # Воспроизведение звука при нажатии
+
+  # Создание кнопки "Отмена"
+  if draw_button("Отмена", 230, 100, 120, 50, GRAY, (150, 150, 150)):
+    cancel_sound.play()  # Воспроизведение звука при нажатии
+
+  # Обновление экрана
+  pygame.display.flip()
+
+# Завершение работы
+pygame.quit()
+sys.exit()
