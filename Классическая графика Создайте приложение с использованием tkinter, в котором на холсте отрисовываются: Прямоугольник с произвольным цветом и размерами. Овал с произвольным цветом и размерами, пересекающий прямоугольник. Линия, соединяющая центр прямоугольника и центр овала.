@@ -1,0 +1,49 @@
+import tkinter as tk
+import random
+
+class GraphicsApp:
+    def init(self, root):
+        self.root = root
+        self.root.title("Классическая графика в Tkinter")
+
+        # Создаём холст
+        self.canvas = tk.Canvas(root, width=500, height=400, bg="white")
+        self.canvas.pack()
+
+        # Рисуем фигуры
+        self.draw_shapes()
+
+    def draw_shapes(self):
+        # Генерация случайных параметров для прямоугольника
+        rect_x1 = random.randint(50, 200)
+        rect_y1 = random.randint(50, 200)
+        rect_x2 = rect_x1 + random.randint(50, 150)
+        rect_y2 = rect_y1 + random.randint(50, 150)
+        rect_color = random.choice(["red", "blue", "green", "purple", "orange"])
+
+        # Рисуем прямоугольник
+        rect = self.canvas.create_rectangle(rect_x1, rect_y1, rect_x2, rect_y2, fill=rect_color, outline="black")
+
+        # Генерация случайных параметров для овала
+        oval_x1 = random.randint(100, 300)
+        oval_y1 = random.randint(100, 300)
+        oval_x2 = oval_x1 + random.randint(50, 150)
+        oval_y2 = oval_y1 + random.randint(50, 150)
+        oval_color = random.choice(["yellow", "pink", "cyan", "lime", "gray"])
+
+        # Рисуем овал
+        oval = self.canvas.create_oval(oval_x1, oval_y1, oval_x2, oval_y2, fill=oval_color, outline="black")
+
+        # Вычисляем центры фигур
+        rect_center_x = (rect_x1 + rect_x2) // 2
+        rect_center_y = (rect_y1 + rect_y2) // 2
+        oval_center_x = (oval_x1 + oval_x2) // 2
+        oval_center_y = (oval_y1 + oval_y2) // 2
+
+        # Рисуем линию между центрами фигур
+        self.canvas.create_line(rect_center_x, rect_center_y, oval_center_x, oval_center_y, width=2, fill="black")
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = GraphicsApp(root)
+    root.mainloop()
